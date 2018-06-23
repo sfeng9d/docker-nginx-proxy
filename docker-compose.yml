@@ -1,0 +1,10 @@
+
+version: '2.1'
+services:
+  base-nginx-proxy:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: ["nginx", "-g", "daemon off;"]
+    image: cirepo/nginx-proxy:1.15.0-alpine
+    restart: always
