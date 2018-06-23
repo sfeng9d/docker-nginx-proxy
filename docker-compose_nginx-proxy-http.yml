@@ -5,8 +5,8 @@ services:
     extends:
       file: docker-compose-base.yml
       service: base-nginx-proxy
-    container_name: ${INSTANCE_NAME:-nginx-proxy}.${INSTANCE_DOMAIN:-internal}
-    hostname: ${INSTANCE_NAME:-nginx-proxy}.${INSTANCE_DOMAIN:-internal}
+    container_name: ${INSTANCE_NAME:-nginx-proxy-http}.${INSTANCE_DOMAIN:-internal}
+    hostname: ${INSTANCE_NAME:-nginx-proxy-http}.${INSTANCE_DOMAIN:-internal}
     networks:
       local-network:
         ipv4_address: 172.16.238.32
