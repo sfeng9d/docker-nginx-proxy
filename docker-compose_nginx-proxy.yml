@@ -1,7 +1,7 @@
 
 version: '2.1'
 services:
-  nginx-proxy-develop:
+  nginx-proxy:
     extends:
       file: docker-compose-base.yml
       service: base-nginx-proxy
@@ -15,53 +15,53 @@ services:
     - "${NEXUS3_DOCKER_HOSTED_PORT:-5000}:${NEXUS3_DOCKER_HOSTED_PORT:-5000}/tcp"
     - "${NEXUS3_DOCKER_PUBLIC_PORT:-5001}:${NEXUS3_DOCKER_PUBLIC_PORT:-5001}/tcp"
     - "${NONSECUREPORT:-80}:${NONSECUREPORT:-80}/tcp"
-
+    - "${SECUREPORT:-443}:${SECUREPORT:-443}/tcp"
     environment:
       # hostname not works if bound it in /etc/hosts
       NGINX_PROXY_CONFIG: |-
         [
-
-
+          {"host": "172.16.238.31", "port": ${NEXUS3_DOCKER_PUBLIC_PORT:-5001}, "pass": "${BASIC_AUTH_PASS:-deployment}", "user": "${BASIC_AUTH_USER:-}",
+            "server_location": "/", "server_name": "docker-mirror.${INSTANCE_DOMAIN:-local}", "server_port": ${SECUREPORT:-443}, "server_protocol": "https"},
 
           {"host": "172.16.238.31", "port": ${NEXUS3_DOCKER_PUBLIC_PORT:-5001}, "pass": "${BASIC_AUTH_PASS:-deployment}", "user": "${BASIC_AUTH_USER:-}",
             "server_location": "/", "server_name": "docker-mirror.${INSTANCE_DOMAIN:-local}", "server_port": ${NEXUS3_DOCKER_PUBLIC_PORT:-5001}, "server_protocol": "http"},
 
-
-
+          {"host": "172.16.238.31", "port": ${NEXUS3_DOCKER_HOSTED_PORT:-5000}, "pass": "${BASIC_AUTH_PASS:-deployment}", "user": "${BASIC_AUTH_USER:-}",
+            "server_location": "/", "server_name": "docker-registry.${INSTANCE_DOMAIN:-local}", "server_port": ${SECUREPORT:-443}, "server_protocol": "https"},
 
           {"host": "172.16.238.31", "port": ${NEXUS3_DOCKER_HOSTED_PORT:-5000}, "pass": "${BASIC_AUTH_PASS:-deployment}", "user": "${BASIC_AUTH_USER:-}",
             "server_location": "/", "server_name": "docker-registry.${INSTANCE_DOMAIN:-local}", "server_port": ${NEXUS3_DOCKER_HOSTED_PORT:-5000}, "server_protocol": "http"},
 
-
-
-
+          {"host": "172.16.238.31", "port": ${NEXUS3_PORT:-28081}, "pass": "${BASIC_AUTH_PASS:-deployment}", "user": "${BASIC_AUTH_USER:-}",
+            "server_location": "~ ^/(.*)", "server_name": "fileserver.${INSTANCE_DOMAIN:-local}", "server_port": ${SECUREPORT:-443}, "server_protocol": "https",
+            "server_proxy_pass_context": "/nexus/repository/files/$$1"},
 
           {"host": "172.16.238.31", "port": ${NEXUS3_PORT:-28081}, "pass": "${BASIC_AUTH_PASS:-deployment}", "user": "${BASIC_AUTH_USER:-}",
             "server_location": "~ ^/(.*)", "server_name": "fileserver.${INSTANCE_DOMAIN:-local}", "server_port": ${NONSECUREPORT:-80}, "server_protocol": "http",
             "server_proxy_pass_context": "/nexus/repository/files/$$1"},
 
           {"host": "172.16.238.21", "port": ${GIT_HTTP_PORT:-10080},
-            "server_location": "/", "server_name": "git.${INSTANCE_DOMAIN:-local}", "server_port": ${NONSECUREPORT:-80}, "server_protocol": "http"},
+            "server_location": "/", "server_name": "git.${INSTANCE_DOMAIN:-local}", "server_port": ${SECUREPORT:-443}, "server_protocol": "https"},
 
           {"host": "172.16.238.31", "port": ${NEXUS3_PORT:-28081}, "pass": "${BASIC_AUTH_PASS:-deployment}", "user": "${BASIC_AUTH_USER:-}",
-            "server_location": "~ ^/(.*)", "server_name": "maven-site.${INSTANCE_DOMAIN:-local}", "server_port": ${NONSECUREPORT:-80}, "server_protocol": "http",
+            "server_location": "~ ^/(.*)", "server_name": "maven-site.${INSTANCE_DOMAIN:-local}", "server_port": ${SECUREPORT:-443}, "server_protocol": "https",
             "server_proxy_pass_context": "/nexus/repository/mvnsite/$$1"},
 
           {"host": "172.16.238.31", "port": ${NEXUS3_PORT:-28081}, "pass": "${BASIC_AUTH_PASS:-deployment}", "user": "${BASIC_AUTH_USER:-}",
-            "server_location": "/", "server_name": "nexus3.${INSTANCE_DOMAIN:-local}", "server_port": ${NONSECUREPORT:-80}, "server_protocol": "http"},
+            "server_location": "/", "server_name": "nexus3.${INSTANCE_DOMAIN:-local}", "server_port": ${SECUREPORT:-443}, "server_protocol": "https"},
 
           {"host": "172.16.238.31", "port": ${NEXUS3_PORT:-28081},
-              "server_location": "/", "server_name": "node.${INSTANCE_DOMAIN:-local}", "server_port": ${NONSECUREPORT:-80}, "server_protocol": "http"},
+              "server_location": "/", "server_name": "node.${INSTANCE_DOMAIN:-local}", "server_port": ${SECUREPORT:-443}, "server_protocol": "https"},
 
           {"host": "172.16.238.31", "port": ${NEXUS3_PORT:-28081},
-              "server_location": "/", "server_name": "npm.${INSTANCE_DOMAIN:-local}", "server_port": ${NONSECUREPORT:-80}, "server_protocol": "http"},
+              "server_location": "/", "server_name": "npm.${INSTANCE_DOMAIN:-local}", "server_port": ${SECUREPORT:-443}, "server_protocol": "https"},
 
           {"host": "172.16.238.67", "port": ${SONARQUBE_EXTERNAL_PORT:-9000},
-              "server_location": "/", "server_name": "sonar.${INSTANCE_DOMAIN:-local}", "server_port": ${NONSECUREPORT:-80}, "server_protocol": "http"}
+              "server_location": "/", "server_name": "sonar.${INSTANCE_DOMAIN:-local}", "server_port": ${SECUREPORT:-443}, "server_protocol": "https"}
         ]
 
     volumes:
-
+    - certs:/etc/nginx/certs/live
     - log:/var/log/nginx
 
 networks:
@@ -76,6 +76,12 @@ networks:
       - subnet: 2001:3984:3989::/64
 
 volumes:
+  certs:
+    driver: local
+    driver_opts:
+      type: none
+      device: ${PWD}/data/certs
+      o: bind
   log:
     driver: local
     driver_opts:

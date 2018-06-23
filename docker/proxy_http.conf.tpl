@@ -7,7 +7,7 @@ server {
     resolver                  <SERVER_RESOLVER>;
     resolver_timeout          5s;
 
-    listen                    0.0.0.0:80;
+    listen                    0.0.0.0:<SERVER_PORT>;
 
     server_name               <SERVER_NAME>;
 

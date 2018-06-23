@@ -1,5 +1,5 @@
 
-upstream backend {
+upstream backend_http_<SERVER_NAME> {
   server                      <BACKEND_HOST_PORT>;
 }
 
@@ -7,7 +7,7 @@ server {
 
 
 
-
+    listen                    0.0.0.0:<SERVER_PORT>;
 
     server_name               <SERVER_NAME>;
 

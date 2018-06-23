@@ -1,5 +1,5 @@
 
-upstream backend {
+upstream backend_https_<SERVER_NAME> {
   server                      <BACKEND_HOST_PORT>;
 }
 
@@ -7,11 +7,12 @@ server {
 
 
 
-    listen                    443 http2;
-    listen                    [::]:443 http2;
+    listen                    <SERVER_PORT> ssl http2;
+    listen                    [::]:<SERVER_PORT> ssl http2;
     server_name               <SERVER_NAME>;
 
-    ssl on;
+    # [warn] the "ssl" directive is deprecated, use the "listen ... ssl" directive instead
+    #ssl on;
     ssl_certificate           /etc/nginx/certs/live/<SERVER_DOMAIN>/fullchain.pem;
     ssl_certificate_key       /etc/nginx/certs/live/<SERVER_DOMAIN>/privkey.pem;
     ssl_ciphers               HIGH:!kEDH:!ADH:!MD5:@STRENGTH;
@@ -26,7 +27,7 @@ server {
         proxy_redirect        off;
         proxy_set_header      Host $host;
         proxy_set_header      X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header      X-Forwarded-Proto $scheme;
+        proxy_set_header      X-Forwarded-Proto "https";
         proxy_set_header      X-Real-IP $remote_addr;
 
         proxy_pass            <SERVER_PROXY_PASS>;
