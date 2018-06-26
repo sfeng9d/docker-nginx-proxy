@@ -62,6 +62,7 @@ services:
 
     volumes:
     - certs:/etc/nginx/certs/live
+    - conf.d:/etc/nginx/conf.d
     - log:/var/log/nginx
 
 networks:
@@ -81,6 +82,12 @@ volumes:
     driver_opts:
       type: none
       device: ${PWD}/data/certs
+      o: bind
+  conf.d:
+    driver: local
+    driver_opts:
+      type: none
+      device: ${PWD}/data/conf.d
       o: bind
   log:
     driver: local

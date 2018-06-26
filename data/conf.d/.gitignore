@@ -3,7 +3,6 @@
 
 # But not these files...
 !.gitignore
-!example.com/*.pem
 # etc...
 
 # ...even if they are in subdirectories

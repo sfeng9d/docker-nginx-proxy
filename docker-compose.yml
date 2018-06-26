@@ -61,7 +61,8 @@ services:
         ]
 
     volumes:
-
+    - certs:/etc/nginx/certs/live
+    - conf.d:/etc/nginx/conf.d
     - log:/var/log/nginx
 
 networks:
@@ -76,6 +77,18 @@ networks:
       - subnet: 2001:3984:3989::/64
 
 volumes:
+  certs:
+    driver: local
+    driver_opts:
+      type: none
+      device: ${PWD}/data/certs
+      o: bind
+  conf.d:
+    driver: local
+    driver_opts:
+      type: none
+      device: ${PWD}/data/conf.d
+      o: bind
   log:
     driver: local
     driver_opts:
