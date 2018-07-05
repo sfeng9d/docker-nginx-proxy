@@ -3,8 +3,9 @@
 
 # But not these files...
 !/.gitignore
-!certs
-!log
+!/certs/.gitignore
+!/conf.d/.gitignore
+!/log/.gitignore
 # etc...
 
 # ...even if they are in subdirectories
