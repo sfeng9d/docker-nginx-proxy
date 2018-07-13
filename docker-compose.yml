@@ -14,7 +14,7 @@ services:
     ports:
     - "${NEXUS3_DOCKER_HOSTED_PORT:-5000}:${NEXUS3_DOCKER_HOSTED_PORT:-5000}/tcp"
     - "${NEXUS3_DOCKER_PUBLIC_PORT:-5001}:${NEXUS3_DOCKER_PUBLIC_PORT:-5001}/tcp"
-    - "${NONSECUREPORT:-80}:${NONSECUREPORT:-80}/tcp"
+    - "${NONSECUREPORT:-1080}:${NONSECUREPORT:-1080}/tcp"
 
     environment:
       # hostname not works if bound it in /etc/hosts
@@ -37,27 +37,27 @@ services:
 
 
           {"host": "172.16.238.31", "port": ${NEXUS3_PORT:-28081}, "pass": "${BASIC_AUTH_PASS:-deployment}", "user": "${BASIC_AUTH_USER:-}",
-            "server_location": "~ ^/(.*)", "server_name": "fileserver.${INSTANCE_DOMAIN:-local}", "server_port": ${NONSECUREPORT:-80}, "server_protocol": "http",
+            "server_location": "~ ^/(.*)", "server_name": "fileserver.${INSTANCE_DOMAIN:-local}", "server_port": ${NONSECUREPORT:-1080}, "server_protocol": "http",
             "server_proxy_pass_context": "/nexus/repository/files/$$1"},
 
           {"host": "172.16.238.21", "port": ${GIT_HTTP_PORT:-10080},
-            "server_location": "/", "server_name": "git.${INSTANCE_DOMAIN:-local}", "server_port": ${NONSECUREPORT:-80}, "server_protocol": "http"},
+            "server_location": "/", "server_name": "git.${INSTANCE_DOMAIN:-local}", "server_port": ${NONSECUREPORT:-1080}, "server_protocol": "http"},
 
           {"host": "172.16.238.31", "port": ${NEXUS3_PORT:-28081}, "pass": "${BASIC_AUTH_PASS:-deployment}", "user": "${BASIC_AUTH_USER:-}",
-            "server_location": "~ ^/(.*)", "server_name": "maven-site.${INSTANCE_DOMAIN:-local}", "server_port": ${NONSECUREPORT:-80}, "server_protocol": "http",
+            "server_location": "~ ^/(.*)", "server_name": "maven-site.${INSTANCE_DOMAIN:-local}", "server_port": ${NONSECUREPORT:-1080}, "server_protocol": "http",
             "server_proxy_pass_context": "/nexus/repository/mvnsite/$$1"},
 
           {"host": "172.16.238.31", "port": ${NEXUS3_PORT:-28081}, "pass": "${BASIC_AUTH_PASS:-deployment}", "user": "${BASIC_AUTH_USER:-}",
-            "server_location": "/", "server_name": "nexus3.${INSTANCE_DOMAIN:-local}", "server_port": ${NONSECUREPORT:-80}, "server_protocol": "http"},
+            "server_location": "/", "server_name": "nexus3.${INSTANCE_DOMAIN:-local}", "server_port": ${NONSECUREPORT:-1080}, "server_protocol": "http"},
 
           {"host": "172.16.238.31", "port": ${NEXUS3_PORT:-28081},
-              "server_location": "/", "server_name": "node.${INSTANCE_DOMAIN:-local}", "server_port": ${NONSECUREPORT:-80}, "server_protocol": "http"},
+              "server_location": "/", "server_name": "node.${INSTANCE_DOMAIN:-local}", "server_port": ${NONSECUREPORT:-1080}, "server_protocol": "http"},
 
           {"host": "172.16.238.31", "port": ${NEXUS3_PORT:-28081},
-              "server_location": "/", "server_name": "npm.${INSTANCE_DOMAIN:-local}", "server_port": ${NONSECUREPORT:-80}, "server_protocol": "http"},
+              "server_location": "/", "server_name": "npm.${INSTANCE_DOMAIN:-local}", "server_port": ${NONSECUREPORT:-1080}, "server_protocol": "http"},
 
           {"host": "172.16.238.67", "port": ${SONARQUBE_EXTERNAL_PORT:-9000},
-              "server_location": "/", "server_name": "sonar.${INSTANCE_DOMAIN:-local}", "server_port": ${NONSECUREPORT:-80}, "server_protocol": "http"}
+              "server_location": "/", "server_name": "sonar.${INSTANCE_DOMAIN:-local}", "server_port": ${NONSECUREPORT:-1080}, "server_protocol": "http"}
         ]
 
     volumes:
